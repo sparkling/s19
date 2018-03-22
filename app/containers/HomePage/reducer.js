@@ -18,26 +18,7 @@ import {
 } from './constants';
 
 const initialState = fromJS({
-  ideas: [
-    {
-      id: 1,
-      createdOn: '04 Dec 1995 00:12:00 GMT',
-      title: 'My title 1',
-      body: 'My body 1',
-    },
-    {
-      id: 2,
-      createdOn: '04 Dec 1995 00:12:00 GMT',
-      title: 'My title 2',
-      body: 'My body 2',
-    },
-    {
-      id: 3,
-      createdOn: '04 Dec 1995 00:12:00 GMT',
-      title: 'My title 3',
-      body: 'My body 3',
-    },
-  ],
+  ideas: [],
 });
 
 function removeMatchingItem(array, property, value) {
