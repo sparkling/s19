@@ -37,7 +37,8 @@ const DeleteIcon = styled.img `
   height: 22px;
   margin-right: 12px;
 `;
-
+const Count = styled.div `
+`;
 
 const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur, handleMouseEnter,
   handleMouseLeave, showDeleteId }) => (
@@ -55,6 +56,7 @@ const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur, han
         onUpdateBody={onUpdateBody}
         onEditBlur={onEditBlur}
       />
+      
       <Actions>
         {(showDeleteId === idea.get('id')) ?
           <Action onClick={(evt) => onDeleteIdea(evt, idea.get('id'))}>

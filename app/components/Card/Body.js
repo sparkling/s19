@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import ContentEditable from 'react-contenteditable';
 import { maxLength } from './maxLength';
+import Count from './Count';
+import {
+  MAX_CHARACTER_COUNT,
+} from './constants';
+
 const StyledBody = styled(ContentEditable) `
   color: grey;
   padding: 1.5em;
@@ -27,6 +32,9 @@ const StyledBody = styled(ContentEditable) `
     border: none;
   };
 `;
+const Container = styled.div `
+  position: relative;
+`;
 
 export class Body extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
@@ -36,14 +44,17 @@ export class Body extends React.Component { // eslint-disable-line react/prefer-
 
   render() {
     return (
-      <StyledBody
-        data-max-length="140"
-        html={this.props.idea.get('body') ? this.props.idea.get('body') : ''}
-        disabled={false}
-        onChange={(evt) => this.props.onUpdateBody(evt, this.props.idea.get('id'))}
-        onBlur={(evt) => this.props.onEditBlur(evt, this.props.idea)}
-        innerRef={(node) => { this.contentEditable = node; }}
-      />
+      <Container>
+        <StyledBody
+          data-max-length={MAX_CHARACTER_COUNT}
+          html={this.props.idea.get('body') ? this.props.idea.get('body') : ''}
+          disabled={false}
+          onChange={(evt) => this.props.onUpdateBody(evt, this.props.idea.get('id'))}
+          onBlur={(evt) => this.props.onEditBlur(evt, this.props.idea)}
+          innerRef={(node) => { this.contentEditable = node; }}
+        />
+        <Count text={this.props.idea.get('body')} />
+      </Container>
     );
   }
 }
