@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ContentEditable from 'react-contenteditable';
 import deleteIcon from './trash-icon.svg';
 import Title from './Title';
+import Body from './Body';
 
 const StyledCard = styled.div `
   width: 335px;
@@ -16,26 +16,6 @@ const StyledCard = styled.div `
 
 `;
 
-const Body = styled(ContentEditable) `
-  color: grey;
-  padding: 1.5em;
-  height: 240px;
-  background-color: white;
-  position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border: 20px solid transparent;
-    border-top-color: white;
-    border-bottom: 0;
-    margin-left: -10px;
-    margin-bottom: -10px;
-  }
-`;
 const Actions = styled.div `
   background-color: #F0F0F0;
   padding: 20px;
@@ -71,11 +51,9 @@ const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur, han
         onEditBlur={onEditBlur}
       />
       <Body
-        html={idea.get('body')}
-        disabled={false}
-        onChange={(evt) => onUpdateBody(evt, idea.get('id'))}
-        onBlur={(evt) => onEditBlur(evt, idea)}
-        ref={(input) => { this.textInput = input; }}
+        idea={idea}
+        onUpdateBody={onUpdateBody}
+        onEditBlur={onEditBlur}
       />
       <Actions>
         {(showDeleteId === idea.get('id')) ?

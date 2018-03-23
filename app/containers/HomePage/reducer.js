@@ -1,5 +1,4 @@
 import { fromJS } from 'immutable';
-import uuid from 'uuid/v1';
 import {
   DEFAULT_ACTION,
   LOAD_IDEAS_SUCCEEDED,
@@ -11,6 +10,8 @@ import {
 
 const initialState = fromJS({
   ideas: [],
+  changeTrigger: false,
+  changeTriggerTarget: 'none',
 });
 
 function removeMatchingItem(array, property, value) {

@@ -20,7 +20,9 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
-import { makeSelectIdeas } from './selectors';
+import {
+  makeSelectIdeas,
+} from './selectors';
 
 const Cards = styled.div `
   display: flex;
@@ -46,18 +48,11 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
   constructor(props) {
     super(props);
-    this.focusTextInput = this.focusTextInput.bind(this);
-    this.handleMouseOver = this.focusTextInput.bind(this);
     this.state = {};
   }
 
   componentDidMount() {
     this.props.onPageLoad();
-  }
-
-  focusTextInput() {
-    // Explicitly focus the text input using the raw DOM API
-    this.textInput.focus();
   }
 
   handleMouseEnter = ((idea) => {
@@ -79,7 +74,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         onEditBlur={this.props.onEditBlur}
         handleMouseEnter={this.handleMouseEnter}
         handleMouseLeave={this.handleMouseLeave}
-        showDeleteId={(this.state.showDeleteId)}
+        showDeleteId={this.state.showDeleteId}
       />));
 
     return (
@@ -96,6 +91,8 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
 HomePage.propTypes = {
   ideas: PropTypes.instanceOf(Immutable.List).isRequired,
+  changeTrigger: PropTypes.bool.isRequired,
+  changeTriggerTarget: PropTypes.string.isRequired,
   onPageLoad: PropTypes.func.isRequired,
   onAddIdea: PropTypes.func.isRequired,
   onDeleteIdea: PropTypes.func.isRequired,
@@ -130,7 +127,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateIdea(id, 'title', evt.target.value));
     },
     onUpdateBody: (evt, id) => {
-      if (evt && evt.preventDefault) evt.preventDefault();
+      if (evt) evt.preventDefault();
       dispatch(updateIdea(id, 'body', evt.target.value));
     },
     dispatch,
