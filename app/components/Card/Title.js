@@ -15,11 +15,6 @@ const StyledTitle = styled(ContentEditable) `
 
 export class Title extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
-  constructor(props) {
-    super(props);
-    this.focusTextInput = this.focusTextInput.bind(this);
-  }
-
   componentDidMount() {
     /* eslint-disable react/no-find-dom-node */
     ReactDom.findDOMNode(this.textInput).focus();
