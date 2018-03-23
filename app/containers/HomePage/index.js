@@ -11,13 +11,14 @@ import { compose } from 'redux';
 import Immutable from 'immutable';
 
 import {
-  getIdeas,
+  loadIdeas,
   deleteIdea,
   addIdea,
   updateIdea,
+  saveIdea,
 } from './actions';
 import reducer from './reducer';
-// import saga from './saga';
+import saga from './saga';
 import messages from './messages';
 import { makeSelectIdeas } from './selectors';
 
@@ -42,6 +43,31 @@ const AddButton = styled.button `
 `;
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+
+  constructor(props) {
+    super(props);
+    this.focusTextInput = this.focusTextInput.bind(this);
+    this.handleMouseOver = this.focusTextInput.bind(this);
+    this.state = {};
+  }
+
+  componentDidMount() {
+    this.props.onPageLoad();
+  }
+
+  focusTextInput() {
+    // Explicitly focus the text input using the raw DOM API
+    this.textInput.focus();
+  }
+
+  handleMouseEnter = ((idea) => {
+    this.setState({ showDeleteId: idea.get('id') });
+  });
+
+  handleMouseLeave = (() => {
+    this.setState({ showDeleteId: undefined });
+  });
+
   render() {
     const cards = this.props.ideas.map((idea) =>
       (<Card
@@ -50,6 +76,10 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         onDeleteIdea={this.props.onDeleteIdea}
         onUpdateTitle={this.props.onUpdateTitle}
         onUpdateBody={this.props.onUpdateBody}
+        onEditBlur={this.props.onEditBlur}
+        handleMouseEnter={this.handleMouseEnter}
+        handleMouseLeave={this.handleMouseLeave}
+        showDeleteId={(this.state.showDeleteId)}
       />));
 
     return (
@@ -66,9 +96,12 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
 HomePage.propTypes = {
   ideas: PropTypes.instanceOf(Immutable.List).isRequired,
+  onPageLoad: PropTypes.func.isRequired,
+  onAddIdea: PropTypes.func.isRequired,
   onDeleteIdea: PropTypes.func.isRequired,
   onUpdateTitle: PropTypes.func.isRequired,
   onUpdateBody: PropTypes.func.isRequired,
+  onEditBlur: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -77,6 +110,9 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
+    onPageLoad: () => {
+      dispatch(loadIdeas());
+    },
     onAddIdea: (evt) => {
       if (evt && evt.preventDefault) evt.preventDefault();
       dispatch(addIdea());
@@ -84,6 +120,10 @@ function mapDispatchToProps(dispatch) {
     onDeleteIdea: (evt, id) => {
       if (evt && evt.preventDefault) evt.preventDefault();
       dispatch(deleteIdea(id));
+    },
+    onEditBlur: (evt, idea) => {
+      if (evt && evt.preventDefault) evt.preventDefault();
+      dispatch(saveIdea(idea));
     },
     onUpdateTitle: (evt, id) => {
       if (evt && evt.preventDefault) evt.preventDefault();
@@ -99,11 +139,11 @@ function mapDispatchToProps(dispatch) {
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 const withReducer = injectReducer({ key: 'homePage', reducer });
-// const withSaga = injectSaga({ key: 'homePage', saga });
+const withSaga = injectSaga({ key: 'homePage', saga });
 
 export default compose(
   withReducer,
-  // withSaga,
+  withSaga,
   withConnect,
   injectIntl,
 

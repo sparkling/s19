@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import ContentEditable from 'react-contenteditable';
 import deleteIcon from './trash-icon.svg';
-import ContentEditable from 'react-contenteditable'
-
+import Title from './Title';
 
 const StyledCard = styled.div `
   width: 335px;
@@ -15,14 +15,7 @@ const StyledCard = styled.div `
              -8px 14px 35px #ccc;
 
 `;
-const Title = styled(ContentEditable) `
-  background-color: #37547D;
-  color: white;
-  font-weight: bold;
-  padding: 1.5em;
-  font-size: 1.45em;
-  height: 160px;
-`;
+
 const Body = styled(ContentEditable) `
   color: grey;
   padding: 1.5em;
@@ -46,6 +39,7 @@ const Body = styled(ContentEditable) `
 const Actions = styled.div `
   background-color: #F0F0F0;
   padding: 20px;
+  height: 65px;
 `;
 const Action = styled.a `
   &:hover {
@@ -64,32 +58,44 @@ const DeleteIcon = styled.img `
   margin-right: 12px;
 `;
 
-const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody }) => (
-  <StyledCard>
-    <Title
-      html={idea.get('title')}
-      disabled={false}
-      onChange={(evt) => onUpdateTitle(evt, idea.get('id'))}
-    />
-    <Body
-      html={idea.get('body')}
-      disabled={false}
-      onChange={(evt) => onUpdateBody(evt, idea.get('id'))}
-    />
-    <Actions>
-      <Action onClick={(evt) => onDeleteIdea(evt, idea.get('id'))}>
-        <DeleteIcon src={deleteIcon} alt="delete" />
-        <DeleteText>Delete</DeleteText>
-      </Action>
-    </Actions>
-  </StyledCard>
-);
+
+const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur, handleMouseEnter,
+  handleMouseLeave, showDeleteId }) => (
+    <StyledCard
+      onMouseEnter={() => handleMouseEnter(idea)}
+      onMouseLeave={() => handleMouseLeave(idea)}
+    >
+      <Title
+        idea={idea}
+        onUpdateTitle={onUpdateTitle}
+        onEditBlur={onEditBlur}
+      />
+      <Body
+        html={idea.get('body')}
+        disabled={false}
+        onChange={(evt) => onUpdateBody(evt, idea.get('id'))}
+        onBlur={(evt) => onEditBlur(evt, idea)}
+        ref={(input) => { this.textInput = input; }}
+      />
+      <Actions>
+        {(showDeleteId === idea.get('id')) ?
+          <Action onClick={(evt) => onDeleteIdea(evt, idea.get('id'))}>
+            <DeleteIcon src={deleteIcon} alt="delete" />
+            <DeleteText>Delete</DeleteText>
+          </Action>
+        : null}
+      </Actions>
+    </StyledCard>);
 
 Card.propTypes = {
   idea: PropTypes.object.isRequired,
   onDeleteIdea: PropTypes.func.isRequired,
   onUpdateTitle: PropTypes.func.isRequired,
   onUpdateBody: PropTypes.func.isRequired,
+  onEditBlur: PropTypes.func.isRequired,
+  handleMouseEnter: PropTypes.func.isRequired,
+  handleMouseLeave: PropTypes.func.isRequired,
+  showDeleteId: PropTypes.string,
 };
 
 export default Card;

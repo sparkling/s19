@@ -2,19 +2,11 @@ import { fromJS } from 'immutable';
 import uuid from 'uuid/v1';
 import {
   DEFAULT_ACTION,
+  LOAD_IDEAS_SUCCEEDED,
   UPDATE_IDEA,
-  GET_IDEAS,
-  GET_IDEAS_SUCCEEDED,
-  GET_IDEAS_FAILED,
-  SAVE_IDEA,
   SAVE_IDEA_SUCCEEDED,
-  SAVE_IDEA_FAILED,
-  NEW_IDEA,
-  NEW_IDEA_SUCCEEDED,
-  NEW_IDEA_FAILED,
+  ADD_IDEA_SUCCEEDED,
   DELETE_IDEA,
-  DELETE_IDEA_SUCCEEDED,
-  DELETE_IDEA_FAILED,
 } from './constants';
 
 const initialState = fromJS({
@@ -39,8 +31,8 @@ function homePageReducer(state = initialState, action) {
     case DEFAULT_ACTION: {
       return state;
     }
-    case NEW_IDEA: {
-      return state.update('ideas', (arr) => arr.push(fromJS({ id: uuid() })));
+    case ADD_IDEA_SUCCEEDED: {
+      return state.update('ideas', (arr) => arr.push(fromJS(action.idea)));
     }
     case DELETE_IDEA: {
       return state.update('ideas', (arr) => removeMatchingItem(arr, 'id', action.id));
@@ -48,14 +40,17 @@ function homePageReducer(state = initialState, action) {
     case UPDATE_IDEA: {
       return state.update('ideas', (arr) => updateObjectInArray(arr, action));
     }
-    case GET_IDEAS: {
-      break;
+    case SAVE_IDEA_SUCCEEDED: {
+      console.log('saved');
+      return state;
+    }
+    case LOAD_IDEAS_SUCCEEDED: {
+      return state.set('ideas', fromJS(action.ideas));
     }
     default: {
       return state;
     }
   }
-  return state;
 }
 
 export default homePageReducer;

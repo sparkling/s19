@@ -1,10 +1,24 @@
 import {
-  NEW_IDEA,
+  ADD_IDEA,
   DELETE_IDEA,
-  SAVE_IDEA,
   UPDATE_IDEA,
-  GET_IDEAS,
+  SAVE_IDEA,
+  LOAD_IDEAS,
 } from './constants';
+
+export function loadIdeas() {
+  return {
+    type: LOAD_IDEAS,
+  };
+}
+
+export function saveIdea(idea) {
+  return {
+    type: SAVE_IDEA,
+    idea,
+  };
+}
+
 
 export function updateIdea(id, property, value) {
   return {
@@ -17,7 +31,7 @@ export function updateIdea(id, property, value) {
 
 export function addIdea() {
   return {
-    type: NEW_IDEA,
+    type: ADD_IDEA,
   };
 }
 
@@ -25,18 +39,5 @@ export function deleteIdea(id) {
   return {
     type: DELETE_IDEA,
     id,
-  };
-}
-
-export function saveIdea(idea) {
-  return {
-    type: SAVE_IDEA,
-    idea,
-  };
-}
-
-export function getIdeas() {
-  return {
-    type: GET_IDEAS,
   };
 }
