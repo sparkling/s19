@@ -1,5 +1,6 @@
 import React from 'react';
-import { FormattedMessage, injectIntl, intlShape  } from 'react-intl';
+// import { FormattedMessage, injectIntl, intlShape  } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Card from 'components/Card';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -28,7 +29,7 @@ import {
 } from './actions';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
+// import messages from './messages';
 import {
   makeSelectIdeas,
   makeSelectMessage,
