@@ -1,6 +1,8 @@
+import { fromJS } from 'immutable';
 import { call, put, takeLatest, all } from 'redux-saga/effects';
 import * as cache from 'service/CacheService';
 import * as api from 'service/ApiService';
+import uuid from 'uuid';
 import {
   parseDatesShallow,
   parseDateShallow,
@@ -15,10 +17,8 @@ import {
   SAVE_IDEA_FAILED,
   ADD_IDEA,
   ADD_IDEA_SUCCEEDED,
-  ADD_IDEA_FAILED,
   DELETE_IDEA,
   DELETE_IDEA_SUCCEEDED,
-  DELETE_IDEA_FAILED,
 } from './constants';
 
 function handleError(e) {
@@ -28,8 +28,8 @@ function handleError(e) {
 }
 
 function* load() {
+  let ideas = cache.getIdeas();
   try {
-    let ideas = cache.getIdeas();
     if (!ideas) {
       ideas = parseDatesShallow(yield call(api.fetchIdeas));
       cache.setIdeas(ideas);
@@ -48,7 +48,14 @@ function* create() {
     yield put({ type: ADD_IDEA_SUCCEEDED, idea });
   } catch (e) {
     handleError(e);
-    yield put({ type: ADD_IDEA_FAILED, message: e.message });
+    // served from cache
+    const idea = {
+      id: `-${uuid()}`,
+      createdOn: new Date(),
+    };
+    cache.addIdea(idea);
+    yield put({ type: ADD_IDEA_SUCCEEDED, idea });
+    // yield put({ type: ADD_IDEA_FAILED, message: e.message });
   }
 }
 
@@ -59,7 +66,9 @@ function* save(action) {
     yield put({ type: SAVE_IDEA_SUCCEEDED });
   } catch (e) {
     handleError(e);
-    yield put({ type: SAVE_IDEA_FAILED, message: e.message });
+    // served from cache
+    yield put({ type: SAVE_IDEA_FAILED });
+    // yield put({ type: SAVE_IDEA_FAILED, message: e.message });
   }
 }
 
@@ -70,7 +79,9 @@ function* deleteIt(action) {
     yield put({ type: DELETE_IDEA_SUCCEEDED, idea: action.idea });
   } catch (e) {
     handleError(e);
-    yield put({ type: DELETE_IDEA_FAILED, message: e.message });
+    // served from cache
+    yield put({ type: DELETE_IDEA_SUCCEEDED, idea: action.idea });
+    // yield put({ type: DELETE_IDEA_FAILED, message: e.message });
   }
 }
 

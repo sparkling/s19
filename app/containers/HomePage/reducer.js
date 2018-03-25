@@ -11,6 +11,7 @@ import {
   ADD_IDEA_SUCCEEDED,
   DELETE_IDEA,
   SORT_IDEAS,
+  SAVE_IDEA_FAILED,
 } from './constants';
 
 const initialState = fromJS({
@@ -40,7 +41,17 @@ function homePageReducer(state = initialState, action) {
       const lastMsg = state.get('message');
       const msg = {
         id: lastMsg ? lastMsg.get('id') + 1 : 1,
+        type: 'info',
         msg: 'Saved',
+      };
+      return state.set('message', fromJS(msg)).set('sortField', '');
+    }
+    case SAVE_IDEA_FAILED: {
+      const lastMsg = state.get('message');
+      const msg = {
+        id: lastMsg ? lastMsg.get('id') + 1 : 1,
+        type: 'error',
+        msg: 'Save Failed',
       };
       return state.set('message', fromJS(msg)).set('sortField', '');
     }

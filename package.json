@@ -187,6 +187,9 @@
     ]
   },
   "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
     "collectCoverageFrom": [
       "app/**/*.{js,jsx}",
       "!app/**/*.test.{js,jsx}",
@@ -224,7 +227,6 @@
     "compression": "1.6.2",
     "cross-env": "5.0.0",
     "draft-js": "^0.10.5",
-    "enzyme-adapter-react-16": "^1.1.1",
     "express": "4.15.3",
     "fontfaceobserver": "2.0.9",
     "history": "4.6.3",
@@ -253,6 +255,7 @@
     "reselect": "3.0.1",
     "sanitize.css": "4.1.0",
     "styled-components": "2.4.0",
+    "uuid": "^3.2.1",
     "warning": "3.0.0",
     "whatwg-fetch": "2.0.3"
   },
@@ -281,6 +284,8 @@
     "coveralls": "2.13.1",
     "css-loader": "0.28.4",
     "enzyme": "3.3.0",
+    "enzyme-to-json": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "3.19.0",
     "eslint-config-airbnb": "15.0.1",
     "eslint-config-airbnb-base": "11.2.0",
@@ -297,6 +302,7 @@
     "image-webpack-loader": "2.0.0",
     "imports-loader": "0.7.1",
     "jest-cli": "20.0.4",
+    "jest-styled-components": "^4.9.0",
     "lint-staged": "3.5.1",
     "ngrok": "2.2.9",
     "node-plop": "0.7.0",

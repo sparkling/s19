@@ -51,9 +51,8 @@ const AddButton = styled.button `
 `;
 
 const Container = styled.div `
-
   .notification-container {
-    width: 10em !important;
+    width: auto !important;
     font-family: arial;
   }
 `;
@@ -77,7 +76,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   componentDidUpdate(nextProps) {
     if (nextProps.message && (!this.props.message ||
       (nextProps.message.get('id') !== this.props.message.get('id')))) {
-      NotificationManager.info(nextProps.message.get('msg'), null, NOTIFICATION_TIMEOUT);
+      this.notify(nextProps.message);
     }
   }
 
@@ -89,6 +88,25 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     this.setState({ hoverCard: 'none' });
   });
 
+  notify(message) {
+    console.log(message);
+    /* eslint-disable default-case */
+    switch (message.get('type')) {
+      case 'info': {
+        NotificationManager.info(message.get('msg'), null, NOTIFICATION_TIMEOUT);
+        break;
+      } case 'error': {
+        NotificationManager.error(message.get('msg'), null, NOTIFICATION_TIMEOUT);
+        break;
+      } case 'success': {
+        NotificationManager.success(message.get('msg'), null, NOTIFICATION_TIMEOUT);
+        break;
+      } case 'warning': {
+        NotificationManager.warning(message.get('msg'), null, NOTIFICATION_TIMEOUT);
+        break;
+      }
+    }
+  }
 
   render() {
     const cards = this.props.ideas.map((idea) =>
