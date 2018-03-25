@@ -1,4 +1,3 @@
-import { fromJS } from 'immutable';
 import { call, put, takeLatest, all } from 'redux-saga/effects';
 import * as cache from 'service/CacheService';
 import * as api from 'service/ApiService';
