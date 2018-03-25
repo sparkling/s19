@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {
   MAX_CHARACTER_COUNT,
   WARNING_TRESHOLD_CHARACTER_COUNT_REMAINING,
-} from './constants';
+} from 'constants';
 
 const StyledCount = styled.div `
   color: red;
@@ -19,14 +19,13 @@ const Count = ({ text }) => {
   const count = text ? text.length : 0;
   const remainingCount = (MAX_CHARACTER_COUNT - count) + 1;
 
-  if (remainingCount <= WARNING_TRESHOLD_CHARACTER_COUNT_REMAINING) {
+  if ((remainingCount <= WARNING_TRESHOLD_CHARACTER_COUNT_REMAINING)) {
     return (
-      <StyledCount>-{remainingCount}</StyledCount>
+      <StyledCount>{(remainingCount ? '-' : null) + remainingCount}</StyledCount>
     );
   }
   return null;
 };
-
 
 Count.propTypes = {
   text: PropTypes.string,

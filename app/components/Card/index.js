@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import deleteIcon from './trash-icon.svg';
 import Title from './Title';
 import Body from './Body';
+import Actions from './Actions';
 
 const StyledCard = styled.div `
   width: 335px;
@@ -16,35 +16,11 @@ const StyledCard = styled.div `
 
 `;
 
-const Actions = styled.div `
-  background-color: #F0F0F0;
-  padding: 20px;
-  height: 65px;
-`;
-const Action = styled.a `
-  &:hover {
-    cursor: pointer;
-  }
-  font-weight: bold;
-  color: #C0281C;
-  display: flex;
-  align-items: center;
-`;
-const DeleteText = styled.div `
-  padding-top: 5px;
-`;
-const DeleteIcon = styled.img `
-  height: 22px;
-  margin-right: 12px;
-`;
-const Count = styled.div `
-`;
-
-const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur, handleMouseEnter,
-  handleMouseLeave, showDeleteId }) => (
+const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur,
+  onMouseEnterCard, onMouseLeaveCard, hoverCard }) => (
     <StyledCard
-      onMouseEnter={() => handleMouseEnter(idea)}
-      onMouseLeave={() => handleMouseLeave(idea)}
+      onMouseEnter={() => onMouseEnterCard(idea)}
+      onMouseLeave={() => onMouseLeaveCard(idea)}
     >
       <Title
         idea={idea}
@@ -56,26 +32,23 @@ const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur, han
         onUpdateBody={onUpdateBody}
         onEditBlur={onEditBlur}
       />
-      
-      <Actions>
-        {(showDeleteId === idea.get('id')) ?
-          <Action onClick={(evt) => onDeleteIdea(evt, idea.get('id'))}>
-            <DeleteIcon src={deleteIcon} alt="delete" />
-            <DeleteText>Delete</DeleteText>
-          </Action>
-        : null}
-      </Actions>
+      <Actions
+        idea={idea}
+        onDeleteIdea={onDeleteIdea}
+        hoverCard={hoverCard}
+      />
+
     </StyledCard>);
 
 Card.propTypes = {
   idea: PropTypes.object.isRequired,
+  hoverCard: PropTypes.string.isRequired,
   onDeleteIdea: PropTypes.func.isRequired,
   onUpdateTitle: PropTypes.func.isRequired,
   onUpdateBody: PropTypes.func.isRequired,
   onEditBlur: PropTypes.func.isRequired,
-  handleMouseEnter: PropTypes.func.isRequired,
-  handleMouseLeave: PropTypes.func.isRequired,
-  showDeleteId: PropTypes.string,
+  onMouseEnterCard: PropTypes.func.isRequired,
+  onMouseLeaveCard: PropTypes.func.isRequired,
 };
 
 export default Card;

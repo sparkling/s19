@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import ContentEditable from 'react-contenteditable';
-import { maxLength } from './maxLength';
-import Count from './Count';
 import {
   MAX_CHARACTER_COUNT,
-} from './constants';
+} from 'constants';
+import { maxLength } from './maxLength';
+import Count from './Count';
 
 const StyledBody = styled(ContentEditable) `
   color: grey;
@@ -38,9 +38,23 @@ const Container = styled.div `
 
 export class Body extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
+  constructor(props) {
+    super(props);
+    this.state = { isEditing: false };
+  }
+
   componentDidMount() {
     maxLength(this.contentEditable.htmlEl);
   }
+
+  onEditFocusLocal = (() => {
+    this.setState({ isEditing: true });
+  });
+
+  onEditBlurLocal = ((evt) => {
+    this.setState({ isEditing: false });
+    this.props.onEditBlur(evt, this.props.idea);
+  });
 
   render() {
     return (
@@ -50,10 +64,11 @@ export class Body extends React.Component { // eslint-disable-line react/prefer-
           html={this.props.idea.get('body') ? this.props.idea.get('body') : ''}
           disabled={false}
           onChange={(evt) => this.props.onUpdateBody(evt, this.props.idea.get('id'))}
-          onBlur={(evt) => this.props.onEditBlur(evt, this.props.idea)}
+          onBlur={this.onEditBlurLocal}
+          onFocus={this.onEditFocusLocal}
           innerRef={(node) => { this.contentEditable = node; }}
         />
-        <Count text={this.props.idea.get('body')} />
+        { this.state.isEditing ? <Count text={this.props.idea.get('body')} /> : null }
       </Container>
     );
   }

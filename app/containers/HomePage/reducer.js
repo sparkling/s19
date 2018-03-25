@@ -1,5 +1,9 @@
 import { fromJS } from 'immutable';
 import {
+  updateObjectInArray,
+  removeMatchingItem,
+} from 'service/ImmutableServices';
+import {
   DEFAULT_ACTION,
   LOAD_IDEAS_SUCCEEDED,
   UPDATE_IDEA,
@@ -12,20 +16,8 @@ const initialState = fromJS({
   ideas: [],
   changeTrigger: false,
   changeTriggerTarget: 'none',
+  msg: undefined,
 });
-
-function removeMatchingItem(array, property, value) {
-  return array.filter((item) => item.get(property) !== value);
-}
-
-function updateObjectInArray(array, action) {
-  return array.map((item) => {
-    if (item.get('id') !== action.id) {
-      return item;
-    }
-    return item.set(action.property, action.value);
-  });
-}
 
 function homePageReducer(state = initialState, action) {
   switch (action.type) {
@@ -39,11 +31,16 @@ function homePageReducer(state = initialState, action) {
       return state.update('ideas', (arr) => removeMatchingItem(arr, 'id', action.id));
     }
     case UPDATE_IDEA: {
-      return state.update('ideas', (arr) => updateObjectInArray(arr, action));
+      return state.update('ideas', (arr) => updateObjectInArray(
+        arr, action.id, action.property, action.value));
     }
     case SAVE_IDEA_SUCCEEDED: {
-      console.log('saved');
-      return state;
+      const lastMsg = state.get('message');
+      const msg = {
+        id: lastMsg ? lastMsg.get('id') + 1 : 1,
+        msg: 'Saved',
+      };
+      return state.set('message', fromJS(msg));
     }
     case LOAD_IDEAS_SUCCEEDED: {
       return state.set('ideas', fromJS(action.ideas));

@@ -1,11 +1,6 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
-
-import {
-  fetchIdeas,
-  newIdea,
-  updateIdea,
-  deleteIdea,
-} from 'service/ApiService';
+import * as cache from 'service/CacheService';
+import * as api from 'service/ApiService';
 
 import {
   LOAD_IDEAS,
@@ -30,7 +25,11 @@ function handleError(e) {
 
 function* load() {
   try {
-    const ideas = yield call(fetchIdeas);
+    let ideas = cache.getIdeas();
+    if (!ideas) {
+      ideas = yield call(api.fetchIdeas);
+      cache.setIdeas(ideas);
+    }
     yield put({ type: LOAD_IDEAS_SUCCEEDED, ideas });
   } catch (e) {
     handleError(e);
@@ -40,7 +39,8 @@ function* load() {
 
 function* create() {
   try {
-    const idea = yield call(newIdea);
+    const idea = yield call(api.newIdea);
+    cache.addIdea(idea);
     yield put({ type: ADD_IDEA_SUCCEEDED, idea });
   } catch (e) {
     handleError(e);
@@ -49,8 +49,10 @@ function* create() {
 }
 
 function* update(action) {
+  console.log('saga update action', action);
   try {
-    yield call(updateIdea, action.idea);
+    cache.updateIdea(action.id, action.propery, action.value);
+    yield call(api.updateIdea, action.idea);
     yield put({ type: SAVE_IDEA_SUCCEEDED });
   } catch (e) {
     handleError(e);
@@ -60,7 +62,8 @@ function* update(action) {
 
 function* deleteIt(action) {
   try {
-    yield call(deleteIdea, action.id);
+    cache.removeIdea(action.id);
+    yield call(api.deleteIdea, action.id);
     yield put({ type: DELETE_IDEA_SUCCEEDED, idea: action.idea });
   } catch (e) {
     handleError(e);

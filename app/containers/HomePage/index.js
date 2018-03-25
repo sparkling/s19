@@ -9,6 +9,12 @@ import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 import { compose } from 'redux';
 import Immutable from 'immutable';
+import 'react-notifications/lib/notifications.css';
+import { NOTIFICATION_TIMEOUT } from 'constants';
+import {
+  NotificationContainer,
+  NotificationManager,
+} from 'react-notifications';
 
 import {
   loadIdeas,
@@ -22,16 +28,17 @@ import saga from './saga';
 import messages from './messages';
 import {
   makeSelectIdeas,
+  makeSelectMessage,
 } from './selectors';
 
 const Cards = styled.div `
   display: flex;
   flex-wrap: wrap;
   flex-align: flex-start;
-`;
-
-const Action = styled.div `
-
+  .notification-container {
+    width: 10em!important;
+    font-family: arial;
+  }
 `;
 
 const AddButton = styled.button `
@@ -48,19 +55,26 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { hoverCard: 'none' };
   }
 
   componentDidMount() {
     this.props.onPageLoad();
   }
 
-  handleMouseEnter = ((idea) => {
-    this.setState({ showDeleteId: idea.get('id') });
+  componentDidUpdate(nextProps) {
+    if (nextProps.message && (!this.props.message ||
+      (nextProps.message.get('id') !== this.props.message.get('id')))) {
+      NotificationManager.info(nextProps.message.get('msg'), null, NOTIFICATION_TIMEOUT);
+    }
+  }
+
+  onMouseEnterCard = ((idea) => {
+    this.setState({ hoverCard: idea.get('id') });
   });
 
-  handleMouseLeave = (() => {
-    this.setState({ showDeleteId: undefined });
+  onMouseLeaveCard = (() => {
+    this.setState({ hoverCard: 'none' });
   });
 
   render() {
@@ -72,27 +86,27 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         onUpdateTitle={this.props.onUpdateTitle}
         onUpdateBody={this.props.onUpdateBody}
         onEditBlur={this.props.onEditBlur}
-        handleMouseEnter={this.handleMouseEnter}
-        handleMouseLeave={this.handleMouseLeave}
-        showDeleteId={this.state.showDeleteId}
+        onMouseEnterCard={this.onMouseEnterCard}
+        onMouseLeaveCard={this.onMouseLeaveCard}
+        hoverCard={this.state.hoverCard}
+        isEditingBody={this.state.isEditingBody}
       />));
 
     return (
       <Cards>
+        <NotificationContainer />
         {cards}
-        <Action >
+        <div>
           <AddButton onClick={(evt) => this.props.onAddIdea(evt)}>Add</AddButton>
-        </Action>
+        </div>
       </Cards>
     );
   }
 }
 
-
 HomePage.propTypes = {
   ideas: PropTypes.instanceOf(Immutable.List).isRequired,
-  changeTrigger: PropTypes.bool.isRequired,
-  changeTriggerTarget: PropTypes.string.isRequired,
+  message: PropTypes.object,
   onPageLoad: PropTypes.func.isRequired,
   onAddIdea: PropTypes.func.isRequired,
   onDeleteIdea: PropTypes.func.isRequired,
@@ -103,6 +117,7 @@ HomePage.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   ideas: makeSelectIdeas(),
+  message: makeSelectMessage(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -143,5 +158,4 @@ export default compose(
   withSaga,
   withConnect,
   injectIntl,
-
 )(HomePage);

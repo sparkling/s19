@@ -7,6 +7,12 @@ const makeSelectIdeas = () => createSelector(
   (hp) => hp.get('ideas')
 );
 
+const makeSelectMessage = () => createSelector(
+  selectHomePageDomain(),
+  (hp) => hp.get('message')
+);
+
 export {
   makeSelectIdeas,
+  makeSelectMessage,
 };
