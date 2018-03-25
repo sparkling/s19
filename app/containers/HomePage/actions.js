@@ -4,6 +4,7 @@ import {
   UPDATE_IDEA,
   SAVE_IDEA,
   LOAD_IDEAS,
+  SORT_IDEAS,
 } from './constants';
 
 export function loadIdeas() {
@@ -19,6 +20,12 @@ export function saveIdea(idea) {
   };
 }
 
+export function sort(field) {
+  return {
+    type: SORT_IDEAS,
+    field,
+  };
+}
 
 export function updateIdea(id, property, value) {
   return {

@@ -12,7 +12,13 @@ const makeSelectMessage = () => createSelector(
   (hp) => hp.get('message')
 );
 
+const makeSelectSortField = () => createSelector(
+  selectHomePageDomain(),
+  (hp) => hp.get('sortField')
+);
+
 export {
   makeSelectIdeas,
   makeSelectMessage,
+  makeSelectSortField,
 };

@@ -30,7 +30,7 @@ export function newIdea() {
   );
 }
 
-export function updateIdea(idea) {
+export function saveIdea(idea) {
   const headers = getHeaders();
   return request(
     updateIdeaUrl,

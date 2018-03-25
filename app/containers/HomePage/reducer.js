@@ -10,6 +10,7 @@ import {
   SAVE_IDEA_SUCCEEDED,
   ADD_IDEA_SUCCEEDED,
   DELETE_IDEA,
+  SORT_IDEAS,
 } from './constants';
 
 const initialState = fromJS({
@@ -17,6 +18,7 @@ const initialState = fromJS({
   changeTrigger: false,
   changeTriggerTarget: 'none',
   msg: undefined,
+  sortField: '',
 });
 
 function homePageReducer(state = initialState, action) {
@@ -40,10 +42,24 @@ function homePageReducer(state = initialState, action) {
         id: lastMsg ? lastMsg.get('id') + 1 : 1,
         msg: 'Saved',
       };
-      return state.set('message', fromJS(msg));
+      return state.set('message', fromJS(msg)).set('sortField', '');
     }
     case LOAD_IDEAS_SUCCEEDED: {
       return state.set('ideas', fromJS(action.ideas));
+    }
+    case SORT_IDEAS: {
+      const newState = state.set('sortField', action.field);
+      if (action.field === 'title') {
+        return newState.update('ideas', (arr) => arr.sort((a, b) =>
+          (a.get(action.field) ? a.get('title') : '').localeCompare(b.get('title'))));
+      } else if (action.field === 'oldToNew') {
+        return newState.update('ideas', (arr) => arr.sort((a, b) =>
+          a.get('createdOn') - (b.get('createdOn'))));
+      } else if (action.field === 'newToOld') {
+        return newState.update('ideas', (arr) => arr.sort((a, b) =>
+          b.get('createdOn') - (a.get('createdOn'))));
+      }
+      throw new Error({ message: `unhandled sorting field [${action.field}]` });
     }
     default: {
       return state;

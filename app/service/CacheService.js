@@ -1,3 +1,4 @@
+import { parseDatesShallow } from 'service/IdeasService';
 
 export const IDEAS = 'ideas';
 
@@ -17,25 +18,17 @@ export function getItem(key) {
   return null;
 }
 
-export function updateCache(key, items, id, property, value) {
-  items.forEach((item) => {
-    if (item.id === id) {
-      /* eslint-disable no-param-reassign */
-      item[property] = value;
-    }
-  });
-  setItem(key, items);
+export function replaceCacheObject(key, items, newItem) {
+  setItem(key, items.map((item) => (item.id === newItem.id) ? newItem : item));
 }
 
-export function updateIdea(id, property, value) {
-  console.log('updateIdea')
+export function saveIdea(idea) {
   const ideas = getItem(IDEAS);
-  if (ideas) {
-    updateCache(IDEAS, ideas, id, property, value);
+  if (ideas && idea) {
+    replaceCacheObject(IDEAS, ideas, idea.toJS());
   }
 }
 export function addIdea(idea) {
-  console.log('addIdea')
   const ideas = getItem(IDEAS);
   if (ideas) {
     ideas.push(idea);
@@ -44,7 +37,6 @@ export function addIdea(idea) {
 }
 
 export function removeIdea(id) {
-  console.log('removeIdea')
   const ideas = getItem(IDEAS);
   if (ideas) {
     setItem(IDEAS, ideas.filter((idea) => idea.id !== id));
@@ -52,11 +44,9 @@ export function removeIdea(id) {
 }
 
 export function setIdeas(ideas) {
-  console.log('setIdeas')
   setItem(IDEAS, ideas);
 }
 
 export function getIdeas() {
-  console.log('getIdeas')
-  return getItem(IDEAS);
+  return parseDatesShallow(getItem(IDEAS));
 }

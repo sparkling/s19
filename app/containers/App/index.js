@@ -20,7 +20,7 @@ import styled from 'styled-components';
 import ErrorBoundary from 'components/ErrorBoundary';
 
 const StyledPage = styled.div `
-  padding: 1em 2em;
+  padding: 2em 2em;
 `;
 
 export default function App() {

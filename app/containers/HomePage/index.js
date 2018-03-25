@@ -11,6 +11,8 @@ import { compose } from 'redux';
 import Immutable from 'immutable';
 import 'react-notifications/lib/notifications.css';
 import { NOTIFICATION_TIMEOUT } from 'constants';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 import {
   NotificationContainer,
   NotificationManager,
@@ -22,6 +24,7 @@ import {
   addIdea,
   updateIdea,
   saveIdea,
+  sort,
 } from './actions';
 import reducer from './reducer';
 import saga from './saga';
@@ -29,16 +32,13 @@ import messages from './messages';
 import {
   makeSelectIdeas,
   makeSelectMessage,
+  makeSelectSortField,
 } from './selectors';
 
 const Cards = styled.div `
   display: flex;
   flex-wrap: wrap;
   flex-align: flex-start;
-  .notification-container {
-    width: 10em!important;
-    font-family: arial;
-  }
 `;
 
 const AddButton = styled.button `
@@ -48,7 +48,19 @@ const AddButton = styled.button `
   border-radius: 10px;
   box-shadow: 8px 10px 25px #ccc,
               -8px 10px 25px #ccc;
-  margin: 1.5em;
+`;
+
+const Container = styled.div `
+
+  .notification-container {
+    width: 10em !important;
+    font-family: arial;
+  }
+`;
+
+const StyledSelect = styled(Select)`
+  margin-bottom: 1.5em;
+  width: 150px;
 `;
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
@@ -77,6 +89,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     this.setState({ hoverCard: 'none' });
   });
 
+
   render() {
     const cards = this.props.ideas.map((idea) =>
       (<Card
@@ -93,13 +106,27 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       />));
 
     return (
-      <Cards>
+      <Container>
+        <StyledSelect
+          name="sort-by"
+          value={this.props.sortField}
+          placeholder="Sort by..."
+          onChange={this.props.onSort}
+          clearable={false}
+          options={[
+            { value: 'title', label: 'Title' },
+            { value: 'oldToNew', label: 'Old to New' },
+            { value: 'newToOld', label: 'New to Old' },
+          ]}
+        />
+        <Cards>
+          {cards}
+          <div>
+            <AddButton onClick={(evt) => this.props.onAddIdea(evt)}>Add</AddButton>
+          </div>
+        </Cards>
         <NotificationContainer />
-        {cards}
-        <div>
-          <AddButton onClick={(evt) => this.props.onAddIdea(evt)}>Add</AddButton>
-        </div>
-      </Cards>
+      </Container>
     );
   }
 }
@@ -107,17 +134,20 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 HomePage.propTypes = {
   ideas: PropTypes.instanceOf(Immutable.List).isRequired,
   message: PropTypes.object,
+  sortField: PropTypes.string.isRequired,
   onPageLoad: PropTypes.func.isRequired,
   onAddIdea: PropTypes.func.isRequired,
   onDeleteIdea: PropTypes.func.isRequired,
   onUpdateTitle: PropTypes.func.isRequired,
   onUpdateBody: PropTypes.func.isRequired,
   onEditBlur: PropTypes.func.isRequired,
+  onSort: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   ideas: makeSelectIdeas(),
   message: makeSelectMessage(),
+  sortField: makeSelectSortField(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -142,8 +172,11 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateIdea(id, 'title', evt.target.value));
     },
     onUpdateBody: (evt, id) => {
-      if (evt) evt.preventDefault();
+      if (evt && evt.preventDefault) evt.preventDefault();
       dispatch(updateIdea(id, 'body', evt.target.value));
+    },
+    onSort: (sortSelection) => {
+      dispatch(sort(sortSelection.value));
     },
     dispatch,
   };

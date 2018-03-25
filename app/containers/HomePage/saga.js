@@ -1,6 +1,10 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
 import * as cache from 'service/CacheService';
 import * as api from 'service/ApiService';
+import {
+  parseDatesShallow,
+  parseDateShallow,
+} from 'service/IdeasService';
 
 import {
   LOAD_IDEAS,
@@ -27,7 +31,7 @@ function* load() {
   try {
     let ideas = cache.getIdeas();
     if (!ideas) {
-      ideas = yield call(api.fetchIdeas);
+      ideas = parseDatesShallow(yield call(api.fetchIdeas));
       cache.setIdeas(ideas);
     }
     yield put({ type: LOAD_IDEAS_SUCCEEDED, ideas });
@@ -39,7 +43,7 @@ function* load() {
 
 function* create() {
   try {
-    const idea = yield call(api.newIdea);
+    const idea = parseDateShallow(yield call(api.newIdea));
     cache.addIdea(idea);
     yield put({ type: ADD_IDEA_SUCCEEDED, idea });
   } catch (e) {
@@ -48,11 +52,10 @@ function* create() {
   }
 }
 
-function* update(action) {
-  console.log('saga update action', action);
+function* save(action) {
   try {
-    cache.updateIdea(action.id, action.propery, action.value);
-    yield call(api.updateIdea, action.idea);
+    cache.saveIdea(action.idea);
+    yield call(api.saveIdea, action.idea);
     yield put({ type: SAVE_IDEA_SUCCEEDED });
   } catch (e) {
     handleError(e);
@@ -74,7 +77,7 @@ function* deleteIt(action) {
 export default function* rootSaga() {
   yield all([
     takeLatest(LOAD_IDEAS, load),
-    takeLatest(SAVE_IDEA, update),
+    takeLatest(SAVE_IDEA, save),
     takeLatest(ADD_IDEA, create),
     takeLatest(DELETE_IDEA, deleteIt),
   ]);

@@ -10,10 +10,10 @@ const StyledCard = styled.div `
   font-family: arial;
   border-radius: 15px;
   overflow: hidden;
-  margin: 1.5em;
+  margin-right: 3em;
+  margin-bottom: 3em;
   box-shadow: 8px 14px 35px #ccc,
              -8px 14px 35px #ccc;
-
 `;
 
 const Card = ({ idea, onDeleteIdea, onUpdateTitle, onUpdateBody, onEditBlur,

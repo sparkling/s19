@@ -1,6 +1,6 @@
 export const DEFAULT_ACTION = 'app/HomePage/DEFAULT_ACTION';
 export const UPDATE_IDEA = 'app/HomePage/UPDATE_IDEA';
-
+export const SORT_IDEAS = 'app/HomePage/SORT_IDEAS';
 
 export const ADD_IDEA = 'app/HomePage/ADD_IDEA';
 export const ADD_IDEA_SUCCEEDED = 'app/HomePage/ADD_IDEA_SUCCEEDED';
