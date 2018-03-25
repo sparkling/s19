@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ContentEditable from 'react-contenteditable';
 import {
   MAX_CHARACTER_COUNT,
-} from 'constants';
+} from 'service/constants';
 import { maxLength } from './maxLength';
 import Count from './Count';
 

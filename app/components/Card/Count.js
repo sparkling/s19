@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {
   MAX_CHARACTER_COUNT,
   WARNING_TRESHOLD_CHARACTER_COUNT_REMAINING,
-} from 'constants';
+} from 'service/constants';
 
 const StyledCount = styled.div `
   color: red;

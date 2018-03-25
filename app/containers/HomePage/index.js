@@ -11,14 +11,13 @@ import injectSaga from 'utils/injectSaga';
 import { compose } from 'redux';
 import Immutable from 'immutable';
 import 'react-notifications/lib/notifications.css';
-import { NOTIFICATION_TIMEOUT } from 'constants';
+import { NOTIFICATION_TIMEOUT } from 'service/constants';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import {
   NotificationContainer,
   NotificationManager,
 } from 'react-notifications';
-
 import {
   loadIdeas,
   deleteIdea,
