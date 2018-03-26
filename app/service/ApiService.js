@@ -1,6 +1,6 @@
 import request from 'utils/request';
 
-const BASE_API_URL = 'http://localhost:3000';
+const BASE_API_URL = '';
 
 const fetchIdeasUrl = `${BASE_API_URL}/ideas`;
 const newIdeaUrl = `${BASE_API_URL}/ideas/new`;
